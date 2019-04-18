@@ -1,5 +1,7 @@
-﻿using System;
+﻿using JobApplicationsTracker.Model;
+using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -20,6 +22,8 @@ namespace JobApplicationsTracker
     /// </summary>
     public partial class MainWindow : Window
     {
+        private string _username { get; set; }
+        private string _password { get; set; }
         public MainWindow()
         {
             InitializeComponent();
@@ -56,6 +60,42 @@ namespace JobApplicationsTracker
             MainWindowGrid.Children.Add(submitButton);
             MainWindowGrid.Children.Add(notRegisteredLabel);
             MainWindowGrid.Children.Add(registerButton);
+
+            usernameTextBox.LostFocus += Username_LostFocus;
+            passwordTextBox.LostFocus += Password_LostFocus;
+            submitButton.MouseDown += OnSubmitClicked;
+            registerButton.MouseDown += OnRegisterClicked;
+        }
+
+        private void Password_LostFocus(object sender, RoutedEventArgs e)
+        {
+            _password = (sender as PasswordBox).Password;
+        }
+
+        private void Username_LostFocus(object sender, RoutedEventArgs e)
+        {
+            _username = (sender as TextBox).GetLineText(0);
+        }
+
+        private void OnRegisterClicked(object sender, MouseButtonEventArgs e)
+        {
+            throw new NotImplementedException();
+        }
+
+        private void OnSubmitClicked(object sender, MouseButtonEventArgs e)
+        {
+            KeyValuePair<string, string> usernamePair = new KeyValuePair<string, string>("username", _username);
+            KeyValuePair<string, string> passwordPair = new KeyValuePair<string, string>("password", _password);
+ 
+            string[] fileAsString;
+            using (StreamReader reader = new StreamReader(StreamReadWrite.ContentFilePath))
+            {
+                fileAsString = reader.ReadToEnd().Split(' ');
+            }
+            if (fileAsString.Contains(usernamePair.ToString()) && fileAsString.Contains(passwordPair.ToString()))
+            {
+                
+            }
         }
     }
 }
